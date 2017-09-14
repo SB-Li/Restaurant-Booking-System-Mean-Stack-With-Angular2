@@ -1,0 +1,171 @@
+<br><br>
+<div class="container">
+<div class="jumbotron text-center">
+  <h1>Welcome to Restaurant</h1>
+  <hr>
+  <p *ngIf="!authService.loggedIn()" class="lead">You must log in to book a table</p>
+  <div>
+    <a *ngIf="!authService.loggedIn()" routerLink="/register" class="btn btn-primary">Register</a>
+    <a *ngIf="!authService.loggedIn()" routerLink="/login" class="btn btn-default">Login</a>
+  </div>
+  <br>
+  <!--<div>
+    <a [routerLink]="['/edit-blog/', confirmationCode]" class="btn btn-success">Edit/Delete Booking By Confirmation Code:</a>
+    <input type="text" [(ngModel)]="confirmationCode">
+  </div>-->
+  <div class="input-group">
+      <input type="text" class="form-control" placeholder="Edit/Delete Booking By Confirmation Code:" name="confirmationCode" [(ngModel)]="confirmationCode">
+      <div class="input-group-btn">
+        <button class="btn btn-default" type="submit" [routerLink]="['/edit-blog/', confirmationCode]"><i class="glyphicon glyphicon-search"></i></button>
+      </div>
+    </div>
+  <br>
+  <!-- New Post Button -->
+  <button type="button" name="button" class="btn btn-warning" *ngIf="!newPost && authService.loggedIn()" (click)="newBlogForm()">New Booking</button>
+  <!-- Reload Button -->
+  <button [disabled]="loadingBlogs" type="button" name="button" class="btn btn-default" *ngIf="!newPost && authService.loggedIn()" (click)="reloadBlogs()"><span class="glyphicon glyphicon-repeat"></span>&nbsp;&nbsp;Refresh</button>
+</div>
+
+<br />
+<br />
+
+<!-- Custom Success/Error Message -->
+<div class="row show-hide-message" *ngIf="message && newPost">
+  <div [ngClass]="messageClass">
+    {{ message }}
+  </div>
+</div>
+
+
+<!-- New Blog Form -->
+<form [formGroup]="form" name="blogForm" (submit)="onBlogSubmit()" *ngIf="newPost">
+  <!-- name Input -->
+  <div class="form-group">
+    <label for="name">Name:</label>
+    <div [ngClass]="{'has-success': form.controls.name.valid, 'has-error': form.controls.name.dirty && form.controls.name.errors}">
+      <!-- Name Input -->
+      <input type="text" name="name" class="form-control" placeholder="*Your Name" autocomplete="off" formControlName="name" />
+      <!-- Validation -->
+      <ul class="help-block">
+        <li *ngIf="form.controls.name.dirty && form.controls.name.errors?.required">This field is required.</li>
+        <li *ngIf="(form.controls.name.dirty && form.controls.name.errors?.minlength) || (form.controls.name.dirty && form.controls.name.errors?.maxlength)">Max length: 20, Min length: 2</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Phone Input -->
+  <div class="form-group">
+    <label for="phone">Tel:</label>
+    <div [ngClass]="{'has-success': form.controls.phone.valid, 'has-error': form.controls.phone.dirty && form.controls.phone.errors}">
+      <!-- Name Input -->
+      <input type="text" name="phone" class="form-control" placeholder="*Your phone number" autocomplete="off" formControlName="phone" />
+      <!-- Validation -->
+      <ul class="help-block">
+        <li *ngIf="form.controls.phone.dirty && form.controls.phone.errors?.required">This field is required.</li>
+        <li *ngIf="(form.controls.phone.dirty && form.controls.phone.errors?.minlength) || (form.controls.phone.dirty && form.controls.phone.errors?.maxlength)">Max length: 11, Min length: 9</li>
+        <li *ngIf="form.controls.phone.dirty && form.controls.phone.errors?.alphaNumericValidation">Must be a number.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="form-group">
+      <label for="time">Time:</label>
+
+      <select id="time" class="form-control" formControlName="time">
+        <option value="11" selected>11:00 AM - 12:00AM</option>
+        <option value="12">12:00 PM - 1:00 PM</option>
+        <option value="1">1:00 PM - 2:00 PM</option>
+        <option value="2">2:00 PM - 3:00 PM</option>
+        <option value="3">3:00 PM - 4:00 PM</option>
+        <option value="4">4:00 PM -- 5:00 PM</option>
+        <option value="5">5:00 PM -- 6:00 PM</option>
+        <option value="6">6:00 PM -- 7:00 PM</option>
+        <option value="7">7:00 PM -- 8:00 PM</option>
+        <option value="8">8:00 PM -- 9:00 PM</option>
+        <option value="9">9:00 PM -- 10:00 PM</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+     <label for="tablenumber">Table Number:</label><br>
+     <!--<input type="text" id="partysize" class="form-control">-->
+     <select id="tablenumber"  class="form-control" formControlName="tablenumber">
+       <option value="1">Table 1 (size: 2)</option>
+       <option value="2">Table 2 (size: 2)</option>
+       <option value="3">Table 3 (size: 2)</option>
+       <option value="4">Table 4 (size: 4)</option>
+       <option value="5">Table 5 (size: 4)</option>
+       <option value="6">Table 6 (size: 6)</option>
+       <option value="7">Table 7 (size: 6)</option>
+       <option value="8">Table 8 (size: 8)</option>
+       <option value="9">Table 9 (size: 8)</option>
+     </select>
+    </div>
+
+
+  <!-- Body Input -->
+  <div class="form-group">
+    <label for="body">Words to us:</label>
+    <div [ngClass]="{'has-success': form.controls.body.valid, 'has-error': form.controls.body.dirty && form.controls.body.errors}">
+      <!-- Body Input -->
+      <textarea name="body" rows="8" cols="80" placeholder="*Your words to us" class="form-control" formControlName="body"></textarea>
+      <!-- Validation -->
+      <ul class="help-block">
+        <li *ngIf="form.controls.body.dirty && form.controls.body.errors?.required">This field is required.</li>
+        <li *ngIf="(form.controls.body.dirty && form.controls.body.errors?.minlength) || (form.controls.body.dirty && form.controls.body.errors?.maxlength)">Max length: 500, Min length: 5</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- Go Back Button -->
+  <button [disabled]="processing" type="button" name="button" (click)="goBack()" class="btn btn-warning">Go Back</button>
+  <!-- Submit Button -->
+  <button [disabled]="processing || !form.valid" type="submit" name="button" class="btn btn-success">Submit</button>
+
+
+</form>
+<!-- New Blog Form -->
+
+<!-- Panel Start -->
+<div *ngIf="!newPost">
+  <!-- Panel Outer Layer -->
+  <div class="panel panel-primary" *ngFor="let blog of blogPosts;let i = index">
+
+    <!-- Panel Name -->
+    <div class="panel-heading">
+      <h3 class="panel-name">Thanks for your booking!</h3>
+    </div>
+
+    <!-- Panel Body -->
+    <div class="panel-body">
+          {{ blog.body }}
+    </div>
+
+    <!-- Panel Footer Start -->
+    <div class="panel-footer">
+      <strong>Date: </strong>{{ blog.createdAt | date:'MMM dd, yyyy' }}
+      <br />
+      <strong>Meal Time: </strong>{{ blog.time }} : 00 PM -- {{ blog.time }} : 59 PM
+      <br />
+      <strong>Table Number: </strong>{{ blog.tablenumber }}
+      <br />
+      <strong>Booked by: </strong>{{ blog.createdBy }}
+      <br />
+          <strong>Name: </strong>{{ blog.name }}
+          <br />
+          <strong>Tel: </strong>{{ blog.phone }}
+          <br />
+
+      <!-- Edit Button -->
+      <a [routerLink]="['/edit-blog/', blog._id]" *ngIf="username === blog.createdBy || username === 'owner'"><button type="button" name="button" class="btn btn-sm btn-info">Edit</button></a>
+      <!-- Delete Button -->
+      <a [routerLink]="['/delete-blog/', blog._id]" *ngIf="username === blog.createdBy || username === 'owner'"><button type="button" name="button" class="btn btn-sm btn-danger">Delete</button></a>
+    </div>
+    <!-- Panel Footer End -->
+
+  </div>
+  <!-- Panel Outer Layer -->
+</div>
+<!-- Panel End -->
+</div>

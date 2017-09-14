@@ -1,0 +1,70 @@
+<br><br>
+<div class="container">
+<h1 class="page-header">Delete Booking</h1>
+
+<!-- Custom Success/Error Message -->
+<div class="row show-hide-message" *ngIf="message">
+  <div [ngClass]="messageClass">
+    {{ message }}
+  </div>
+</div>
+
+<!-- Modal Confirmation Window -->
+<div class="col-md-6" *ngIf="foundBlog">
+  <!-- Model Outer Layer -->
+  <div class="modal-content">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <!-- Close Button -->
+      <button type="button" name="button" class="close" data-dismiss="modal">&times;</button>
+      <!-- Modal Name -->
+      <h4 class="modal-name">Confirm</h4>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <p>Are you sure you would like to delete this booking?</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <!-- Yes Button -->
+      <button [disabled]="processing" type="button" name="button" class="btn btn-success" (click)="deleteBlog()">Yes</button>
+      <!-- No Button -->
+      <a routerLink="/blog"><button [disabled]="processing" type="button" name="button" class="btn btn-danger">No</button></a>
+    </div>
+  </div>
+
+  <br />
+
+  <!-- Panel -->
+  <div class="panel panel-primary">
+    <!-- Panel Heading -->
+    <div class="panel-heading">
+      <!-- Panel Name -->
+      <h3 class="panel-name">{{ blog.name }}</h3>
+    </div>
+
+    <div class="panel-body">
+      {{ blog.phone }}
+    </div>
+
+    <!-- Panel Body -->
+    <div class="panel-body">
+      {{ blog.body }}
+    </div>
+
+    <!-- Panel Footer -->
+    <div class="panel-footer">
+      <strong>Meal Time: </strong>{{ blog.time }}
+      <br />
+      <strong>Table Number: </strong>{{ blog.tablenumber }}
+      <br />
+      <strong>Booked by: </strong>{{ blog.createdBy }}
+      <br />
+      <strong>Date: </strong>{{ blog.createdAt | date:'MMM dd, yyyy' }}
+    </div>
+  </div>
+
+</div>
+</div>
